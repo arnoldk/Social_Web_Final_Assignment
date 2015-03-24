@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    version="XHTML+RDFa 1.0" xml:lang="en">
+  <head>
+    <title>Social Web Assessment 3: Movie Runtime vs Budget</title>
+    <link rel="profile" href="http://www.w3.org/1999/xhtml/vocab" />
+    <meta property="dc:creator" content="Arnold Kraakman, Fleur Fenneker & Elmar Moerman" />
+    <link rel="foaf:primaryTopic" href="http://example.org/VU/#assessment3" />
+    <link href="style.css" rel="stylesheet" type="text/css">
+   	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js"></script><script type="text/javascript" src="https://www.google.com/jsapi"></script><script type="text/javascript" src="sgvizler.js"></script><script type="text/javascript">sgvizler.prefix('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'); sgvizler.prefix('rdfs', 'http://www.w3.org/2000/01/rdf-schema#'); sgvizler.prefix('dbo', 'http://dbpedia.org/ontology/'); sgvizler.prefix('dbp', 'http://dbpedia.org/property/'); sgvizler.prefix('npd', 'http://sws.ifi.uio.no/npd/'); sgvizler.prefix('npdv', 'http://sws.ifi.uio.no/vocab/npd#'); sgvizler.prefix('xs', 'http://www.w3.org/2001/XMLSchema#'); 
+sgvizler.prefix('dbowork', 'http://dbpedia.org/ontology/Work/'); 
+	$(document).ready(function() { sgvizler.containerDrawAll(); });
+    </script>
+</head>
+  
+  <body about="vu_assessment3" >
+  <div id="header" align="center">
+       <h2>Social Web - Assignment 3: Movie Runtime vs Budget</h2>
+  </div>
+   <center>
+	<h3><span property="dc:subject">Runtime versus Budget</span> of the <span property="dc:subject">movies</span> from <span property="dc:source">DBpedia</span>.</h3>
+	 <p>
+	 	Below is the average of the runtime of movies compared with the total budget of all the movies made in the USA. 
+		</br> With this information, we could see if a movie has a larger budget if the movie has a longer runtime.
+		</br> 
+		<em>Note: The movies are all from the same country so that the currency is the same for every movie, because Dbpedia.org stores all currencies under one parameter.</em>
+</br> 
+</br> 
+	 	Below is the runtime of movies between 1 minute and 99 minutes per movie:
+	 </p>
+	<div id="sgvzl_dbpedia_1tm99" 
+		data-sgvizler-endpoint="http://dbpedia.org/sparql" 
+		data-sgvizler-query="
+SELECT (ROUND((AVG(?Budget_Worktime) AS ?Budget_Worktime_AVG_1_99)) AS ?Budget_Worktime_AVG_1_99) 
+		WHERE { 
+		  ?f rdf:type dbo:Film .
+		  ?f rdfs:label ?l . 
+		  ?f dbo:abstract ?a.
+		  ?f dbp:budget ?Movie_budget.
+		  ?f dbowork:runtime ?Worktime.
+		  ?f dbo:country <http://dbpedia.org/resource/United_States>
+		  BIND (xsd:integer(?Worktime) as ?Worktime_int)
+		  BIND (xsd:integer(?Movie_budget) as ?Moviebudget_int)
+		  BIND (?Moviebudget_int / ?Worktime_int AS ?Budget_Worktime)
+		  FILTER (lang(?l) = lang(?a)) 
+		  FILTER (lang(?a) = 'en')
+		  FILTER (xs:integer(?Movie_budget) > 1000 && xs:integer(?Movie_budget) < 1891000000)
+		  FILTER (?Worktime_int > 1 && ?Worktime_int < 99)
+}    " 
+		data-sgvizler-chart="google.visualization.Table" 
+		data-sgvizler-loglevel="2" 
+		data-sgvizler-chart-options="title=|showTip=true" 
+		style="width:300px; height:50px;">
+	</div>
+	<p>
+	Below is the runtime of movies between 100 minute and 10000 minutes:
+	</p>
+	<div id="sgvzl_dbpedia_runetime100tm10000" 
+		data-sgvizler-endpoint="http://dbpedia.org/sparql" 
+		data-sgvizler-query="PREFIX owl: <http://www.w3.org/2002/07/owl#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+PREFIX xs: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dbowork: <http://dbpedia.org/ontology/Work/> 
+SELECT (ROUND((AVG(?Budget_Worktime) AS ?Budget_Worktime_AVG_100_100000)) AS ?Budget_Worktime_AVG_100_100000) 
+		WHERE { 
+		  ?f rdf:type dbo:Film .
+		  ?f rdfs:label ?l . 
+		  ?f dbo:abstract ?a.
+		  ?f dbp:budget ?Movie_budget.
+		  ?f dbowork:runtime ?Worktime.
+		  ?f dbo:country <http://dbpedia.org/resource/United_States>
+		  BIND (xsd:integer(?Worktime) as ?Worktime_int)
+		  BIND (xsd:integer(?Movie_budget) as ?Moviebudget_int)
+		  BIND (?Moviebudget_int / ?Worktime_int AS ?Budget_Worktime)
+		  FILTER (lang(?l) = lang(?a)) 
+		  FILTER (lang(?a) = 'en')
+		  FILTER (xs:integer(?Movie_budget) > 1000 && xs:integer(?Movie_budget) < 1891000000)
+		  FILTER (?Worktime_int > 100 && ?Worktime_int < 100000)
+}    " 
+		data-sgvizler-chart="google.visualization.Table" 
+		data-sgvizler-loglevel="2" 
+		data-sgvizler-chart-options="title=|showTip=true" 
+		style="width:300px; height:100px;">
+	</div>
+	<p>
+	<h4>As we can see, if the movie has a larger runtime, the budget is greater. </h4>
+	</p>
+    </center>
+     </br>
+	 </br>
+	 <a href="Sparql_SW_BDPedia_Films_overview.html">Back to - Films Overview</a> 
+	 </br>
+	 </br>
+	     <div id="footer" align="center">
+    Copyright by:
+        <div vocab="http://schema.org/" typeof="Person">
+        <span property="name">Fleur</span>, 
+        <span property="name">Elmar</span> & 
+        <span property="name">Arnold</span>
+        </br>
+		</div>
+        <span property="dtstart" content="2015-03-12T19:00-08:00">12 March 2015</span>
+ 	</div>
+    
+    
+  </body>
+</html>
